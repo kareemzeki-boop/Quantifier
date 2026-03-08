@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environments
+venv/
+env/
+.env/
+.venv/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Temp / output files generated at runtime
+*_gfrc_summary.csv
+*_gfrc_phase2.csv
+*_gfrc_phase3_groups.csv
+*_gfrc_phase3_issues.csv
+*_gfrc_breakdown.csv
+*_gfrc_report.xlsx
+*_cleanup_issues.csv
+demo_drawing.dxf
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (if using Express backend)
+node_modules/
+dist/
+.env

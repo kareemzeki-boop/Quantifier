@@ -1,0 +1,18 @@
+# GFRC Quantification Tool — Phase 1-4
+# Install everything with:  pip install -r requirements.txt
+
+# ── Phase 1: Parsing ─────────────────────────────────────────────────────────
+ezdxf>=1.1.0          # DXF parsing
+pymupdf>=1.23.0       # PDF parsing (imports as 'fitz')
+
+# ── Phase 2: Calculation ─────────────────────────────────────────────────────
+tabulate>=0.9.0       # console table output
+
+# ── Phase 3: Geometry cleanup ────────────────────────────────────────────────
+shapely>=2.0.0        # polygon ops, union, validity repair
+
+# ── Phase 4: Frontend ────────────────────────────────────────────────────────
+streamlit>=1.35.0     # web dashboard
+plotly>=5.20.0        # interactive charts
+pandas>=2.0.0         # dataframes & export
+openpyxl>=3.1.0      # Excel (.xlsx) export
