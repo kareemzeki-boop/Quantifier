@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GFRC & GFRP Quotation Generator — Emaar Almadina Industries</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: { extend: {} }
+  }
+</script>
+<style>
+/* ── CSS CUSTOM PROPERTIES ── */
+:root {
+  --bg: #07111f;
+  --surface: rgba(255,255,255,0.04);
+  --surface2: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --accent: #06b6d4;
+  --accent2: #3b82f6;
+}
+[data-theme="light"] {
+  --bg: #f1f5f9;
+  --surface: rgba(255,255,255,0.95);
+  --surface2: #f8fafc;
+  --border: rgba(0,0,0,0.09);
+  --border2: rgba(0,0,0,0.16);
+  --text: #0f172a;
+  --muted: #64748b;
+  --accent: #0891b2;
+  --accent2: #2563eb;
+}
+
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+  transition: background 0.3s, color 0.3s;
+}
+[data-theme="dark"] body {
+  background: radial-gradient(ellipse 120% 60% at 50% -20%, #0c1f3f 0%, #07111f 55%);
+}
+
+/* ── GLASSMORPHISM CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: background 0.3s, border 0.3s;
+}
+[data-theme="dark"] .card { box-shadow: 0 4px 32px rgba(0,0,0,0.35); }
+[data-theme="light"] .card { box-shadow: 0 2px 16px rgba(0,0,0,0.07); }
+.card-accent-top { border-top: 2px solid var(--accent); }
+.card-accent-green { border-top: 2px solid #10b981; }
+
+/* ── FORM CONTROLS ── */
+.label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.inp {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 11px;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.3s;
+  font-family: inherit;
+}
+[data-theme="dark"] .inp { background: rgba(255,255,255,0.05); }
+[data-theme="light"] .inp { background: #fff; }
+.inp:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(6,182,212,0.15); }
+select.inp { cursor: pointer; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: 9px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.18s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+}
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-ghost {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+}
+.btn-ghost:hover { background: var(--surface); border-color: var(--accent); transform: translateY(-1px); }
+.btn-sm { padding: 6px 13px; font-size: 0.78rem; }
+.btn-del {
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.18);
+  color: #f87171;
+  padding: 6px 11px;
+  border-radius: 7px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.18s;
+}
+.btn-del:hover { background: rgba(239,68,68,0.18); }
+
+/* ── BADGES ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.67rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.badge-gfrc { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.22); }
+.badge-gfrp { background: rgba(96,165,250,0.12); color: #60a5fa; border: 1px solid rgba(96,165,250,0.22); }
+
+/* ── TOGGLE ── */
+.toggle-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.tog { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+.tog input { opacity: 0; width: 0; height: 0; }
+.tog-sl {
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid var(--border2);
+  border-radius: 22px;
+  transition: 0.25s;
+}
+[data-theme="light"] .tog-sl { background: #e2e8f0; }
+.tog-sl::before {
+  content: '';
+  position: absolute;
+  width: 16px; height: 16px;
+  left: 2px; top: 2px;
+  background: var(--muted);
+  border-radius: 50%;
+  transition: 0.25s;
+}
+.tog input:checked + .tog-sl { background: rgba(6,182,212,0.2); border-color: var(--accent); }
+.tog input:checked + .tog-sl::before { transform: translateX(18px); background: var(--accent); }
+
+/* ── GRAND TOTAL ── */
+.grand-num {
+  font-size: 2.4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* ── COMPLIANCE ITEMS ── */
+.ci { display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.ci:last-child { border-bottom: none; }
+.ci-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.ci-dot-green { background: #10b981; box-shadow: 0 0 7px #10b981; }
+.ci-dot-amber { background: #f59e0b; box-shadow: 0 0 7px #f59e0b; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── NAV ── */
+#nav {
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+}
+[data-theme="dark"] #nav { background: rgba(7,17,31,0.82); }
+[data-theme="light"] #nav { background: rgba(241,245,249,0.88); }
+
+/* ── ELEMENT NUM CIRCLE ── */
+.el-num {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── BREAKDOWN ROW ── */
+.brow {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+.brow:last-child { border-bottom: none; }
+.brow-label { color: var(--muted); }
+.brow-val { color: var(--text); font-weight: 600; }
+
+/* ── STAT CHIP ── */
+.stat-chip {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 14px;
+  text-align: center;
+}
+
+/* ======================== PRINT STYLES ======================== */
+@media print {
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  html, body { background: #fff !important; color: #000 !important; font-size: 9.5pt; }
+  #screenView { display: none !important; }
+  #printView { display: block !important; }
+  @page { size: A4; margin: 14mm 18mm 16mm 18mm; }
+  .pb { page-break-before: always; }
+}
+#printView { display: none; }
+
+/* Print typography */
+#printView { font-family: 'Segoe UI', Arial, sans-serif; color: #0f172a; }
+.ph { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 14px; border-bottom: 3px solid #0891b2; margin-bottom: 18px; }
+.pco { font-size: 17pt; font-weight: 900; color: #0f172a; line-height: 1.2; }
+.psub { font-size: 8pt; color: #64748b; letter-spacing: 0.1em; margin-top: 2px; }
+.pref { font-size: 19pt; font-weight: 900; color: #0891b2; }
+.pmeta { font-size: 8.5pt; color: #374151; margin-top: 3px; }
+.ptitle { font-size: 9.5pt; font-weight: 800; color: #0891b2; margin: 16px 0 7px; text-transform: uppercase; letter-spacing: 0.06em; }
+.ptbl { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-bottom: 14px; }
+.ptbl th { background: #0891b2 !important; color: #fff !important; padding: 6px 9px; text-align: left; font-weight: 700; }
+.ptbl td { padding: 6px 9px; border-bottom: 1px solid #e2e8f0; }
+.ptbl tr:nth-child(even) td { background: #f8fafc; }
+.ptotal { background: #eff6ff; border: 2px solid #0891b2; border-radius: 8px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+.ptotal-num { font-size: 20pt; font-weight: 900; color: #0891b2; }
+.pterms { margin-top: 20px; padding-top: 12px; border-top: 1px solid #e2e8f0; font-size: 7.5pt; color: #64748b; line-height: 1.7; }
+.psigs { margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; font-size: 8.5pt; }
+.psig-line { border-top: 1px solid #94a3b8; padding-top: 8px; }
+.pcomp { border: 1px solid #cbd5e1; border-radius: 6px; padding: 11px 14px; margin-top: 14px; font-size: 7.5pt; color: #374151; line-height: 1.7; }
+.pclient { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 6px; padding: 9px 14px; margin-bottom: 14px; display: flex; gap: 32px; font-size: 8.5pt; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SCREEN VIEW
+     ══════════════════════════════════════════════════════════════ -->
+<div id="screenView">
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div style="max-width:1280px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px;">
+      <div style="display:flex; align-items:center; gap:14px;">
+        <div id="logoWrap" style="width:50px; height:50px; border:2px dashed rgba(6,182,212,0.4); border-radius:10px; background:rgba(6,182,212,0.05); display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden; cursor:pointer;" title="Click to upload logo" onclick="document.getElementById('logoInput').click()">
+          <div id="logoPlaceholder" style="text-align:center; color:#06b6d4;">
+            <div style="font-size:0.5rem; font-weight:700; line-height:1.3;">COMPANY<br>LOGO</div>
+          </div>
+          <img id="logoImg" src="" alt="Company Logo" style="display:none; width:100%; height:100%; object-fit:contain;">
+          <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="loadLogo(this)">
+        </div>
+        <div>
+          <div style="font-size:1.05rem; font-weight:800; letter-spacing:-0.02em; color:var(--text);">Emaar Almadina Industries</div>
+          <div style="font-size:0.67rem; color:var(--muted); letter-spacing:0.09em; text-transform:uppercase;">GFRC · GFRP · Facade Engineering · UAE</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+        <div style="font-size:0.75rem; color:var(--muted); display:flex; align-items:center; gap:6px;">
+          <span style="color:var(--accent); font-weight:700;" id="navRef">EAI-2026-0000</span>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="toggleTheme()">
+          <span id="themeIcon">☀️</span><span id="themeLabel">Light Mode</span>
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="doPrint()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 6,2 18,2 18,9"/><path d="M6,18H4a2,2,0,0,1-2-2V11a2,2,0,0,1,2-2H20a2,2,0,0,1,2,2V16a2,2,0,0,1-2,2H18"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print / Save PDF
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div style="max-width:1280px; margin:0 auto; padding:28px 24px 60px;">
+
+    <!-- ── QUOTE HEADER CARD ── -->
+    <div class="card card-accent-top" style="padding:22px 24px; margin-bottom:22px;">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <div style="font-size:0.95rem; font-weight:700; color:var(--text);">Project Quotation Header</div>
+          <div style="font-size:0.78rem; color:var(--muted); margin-top:2px;">Configure reference, client, and project details</div>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(6,182,212,0.12),rgba(59,130,246,0.12)); border:1px solid rgba(6,182,212,0.22); border-radius:11px; padding:10px 18px; text-align:center; min-width:180px;">
+          <div style="font-size:0.65rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.1em;">Quote Reference</div>
+          <div style="font-size:1.15rem; font-weight:900; color:var(--accent); letter-spacing:0.04em; margin-top:2px;" id="quoteRefDisplay">EAI-2026-0000</div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px;">
+        <div>
+          <label class="label">Quote Date</label>
+          <input type="date" class="inp" id="qDate" oninput="syncMeta()">
+        </div>
+        <div>
+          <label class="label">Valid Until</label>
+          <input type="date" class="inp" id="qValid" oninput="syncMeta()">
+        </div>
+        <div style="grid-column:span 2;">
+          <label class="label">Prepared By</label>
+          <input type="text" class="inp" id="qPrepared" placeholder="Estimator / Engineer name" oninput="syncMeta()">
+        </div>
+        <div>
+          <label class="label">Client Name</label>
+          <input type="text" class="inp" id="qClient" placeholder="Developer / Client" oninput="syncMeta()">
+        </div>
+        <div style="grid-column:span 2;">
+          <label class="label">Project Name</label>
+          <input type="text" class="inp" id="qProject" placeholder="Building / Project name" oninput="syncMeta()">
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MAIN 2-COL LAYOUT ── -->
+    <div style="display:grid; grid-template-columns:1fr 340px; gap:22px; align-items:start;">
+
+      <!-- LEFT COLUMN -->
+      <div>
+
+        <!-- Elements Section Header -->
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+          <div>
+            <div style="font-size:0.95rem; font-weight:700; color:var(--text);">Facade Elements</div>
+            <div style="font-size:0.78rem; color:var(--muted); margin-top:2px;">Add GFRC and GFRP elements to the quotation scope</div>
+          </div>
+          <div style="display:flex; gap:9px;">
+            <button class="btn btn-ghost btn-sm" onclick="addEl('GFRC')">
+              <span style="color:#34d399; font-size:1rem;">+</span> Add GFRC
+            </button>
+            <button class="btn btn-ghost btn-sm" onclick="addEl('GFRP')">
+              <span style="color:#60a5fa; font-size:1rem;">+</span> Add GFRP
+            </button>
+          </div>
+        </div>
+
+        <!-- Elements Container -->
+        <div id="elContainer" style="display:flex; flex-direction:column; gap:14px; margin-bottom:22px;">
+          <div id="emptyMsg" style="text-align:center; padding:32px; color:var(--muted); font-size:0.85rem; border:1px dashed var(--border2); border-radius:14px;">
+            No elements added. Click "Add GFRC" or "Add GFRP" to begin.
+          </div>
+        </div>
+
+        <!-- Cost Breakdown Card -->
+        <div class="card card-accent-top" style="padding:22px 24px;">
+          <div style="font-size:0.95rem; font-weight:700; color:var(--text); margin-bottom:16px;">Cost Breakdown</div>
+
+          <div class="brow">
+            <span class="brow-label">Fabrication (Materials + Labour + Curing)</span>
+            <span class="brow-val" id="dFab">AED 0.00</span>
+          </div>
+          <div class="brow">
+            <span class="brow-label">Mold / Tooling Engineering (CNC, Patterns)</span>
+            <span class="brow-val" id="dTool">AED 0.00</span>
+          </div>
+          <div class="brow">
+            <span class="brow-label">Fixing / Bracketry System</span>
+            <span class="brow-val" id="dFix">AED 0.00</span>
+          </div>
+          <div class="brow">
+            <label class="toggle-wrap" style="cursor:pointer;">
+              <span class="tog">
+                <input type="checkbox" id="installTog" checked onchange="recalc()">
+                <span class="tog-sl"></span>
+              </span>
+              <span class="brow-label" style="margin:0; text-transform:none; font-size:0.875rem; font-weight:400; color:var(--muted);">Installation &amp; Delivery (within UAE, 75 AED/m²)</span>
+            </label>
+            <span class="brow-val" id="dInstall">AED 0.00</span>
+          </div>
+
+          <div style="border-top:1px solid var(--border2); margin:6px 0 2px;"></div>
+          <div class="brow">
+            <span style="font-size:0.875rem; font-weight:700; color:var(--text);">Sub-Total (Excl. VAT)</span>
+            <span style="font-size:0.875rem; font-weight:700; color:var(--text);" id="dSub">AED 0.00</span>
+          </div>
+          <div class="brow">
+            <div style="display:flex; align-items:center; gap:9px;">
+              <span style="background:rgba(251,191,36,0.12); color:#fbbf24; border:1px solid rgba(251,191,36,0.22); border-radius:5px; padding:2px 8px; font-size:0.68rem; font-weight:800;">VAT 5%</span>
+              <span class="brow-label" style="margin:0; text-transform:none; font-weight:400; font-size:0.875rem;">UAE Value Added Tax</span>
+            </div>
+            <span style="color:#fbbf24; font-weight:700;" id="dVAT">AED 0.00</span>
+          </div>
+
+          <!-- Grand Total -->
+          <div style="background:linear-gradient(135deg,rgba(6,182,212,0.07),rgba(59,130,246,0.07)); border:1px solid rgba(6,182,212,0.2); border-radius:14px; padding:18px 22px; display:flex; align-items:center; justify-content:space-between; margin-top:12px; flex-wrap:wrap; gap:12px;">
+            <div>
+              <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted);">Grand Total — Including 5% VAT</div>
+              <div style="font-size:0.75rem; color:var(--muted); margin-top:3px;" id="dAreaNote">Total quoted area: 0.00 m²</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="grand-num" id="dGrand">AED 0</div>
+            </div>
+          </div>
+        </div><!-- /breakdown card -->
+
+      </div><!-- /left col -->
+
+      <!-- RIGHT COLUMN -->
+      <div style="display:flex; flex-direction:column; gap:18px;">
+
+        <!-- Compliance Panel -->
+        <div class="card card-accent-green" style="padding:18px 20px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px;">
+            <div style="width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 8px #10b981; flex-shrink:0;"></div>
+            <div style="font-size:0.9rem; font-weight:700; color:var(--text);">Compliance &amp; Standards</div>
+          </div>
+          <div id="compPanel" style="font-size:0.78rem; color:var(--muted); font-style:italic;">
+            Add elements to see applicable standards and compliance requirements.
+          </div>
+        </div>
+
+        <!-- Summary Panel -->
+        <div class="card" style="padding:18px 20px;">
+          <div style="font-size:0.9rem; font-weight:700; color:var(--text); margin-bottom:14px;">Element Summary</div>
+          <div id="summaryPanel" style="font-size:0.82rem; color:var(--muted); font-style:italic;">No elements added yet.</div>
+        </div>
+
+        <!-- Rate Reference Card -->
+        <div class="card" style="padding:18px 20px;">
+          <div style="font-size:0.9rem; font-weight:700; color:var(--text); margin-bottom:12px;">Unit Rate Reference</div>
+          <div style="display:flex; flex-direction:column; gap:7px; font-size:0.8rem;">
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted);">GFRC Fabrication</span><span style="font-weight:700; color:#34d399;">350 AED/m²</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted);">GFRP Fabrication</span><span style="font-weight:700; color:#60a5fa;">450 AED/m²</span></div>
+            <div style="height:1px; background:var(--border); margin:2px 0;"></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted);">GFRC Mold/Tooling</span><span style="font-weight:600; color:var(--text);">+15% of fab</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted);">GFRP Mold/Tooling</span><span style="font-weight:600; color:var(--text);">+18% of fab</span></div>
+            <div style="height:1px; background:var(--border); margin:2px 0;"></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted);">SS 316 Brackets</span><span style="font-weight:600; color:var(--text);">85 AED/m²</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted);">SS 304 Brackets</span><span style="font-weight:600; color:var(--text);">65 AED/m²</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted);">HDG Sub-frame</span><span style="font-weight:600; color:var(--text);">45 AED/m²</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted);">Direct Fix</span><span style="font-weight:600; color:var(--text);">15 AED/m²</span></div>
+            <div style="height:1px; background:var(--border); margin:2px 0;"></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted);">Installation (UAE)</span><span style="font-weight:600; color:var(--text);">75 AED/m²</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted);">VAT</span><span style="font-weight:700; color:#fbbf24;">5%</span></div>
+          </div>
+          <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border); font-size:0.72rem; color:var(--muted); line-height:1.6;">
+            Complexity multipliers applied to fabrication cost only. All rates are standard UAE market estimates. Final pricing subject to site visit and approved drawings.
+          </div>
+        </div>
+
+      </div><!-- /right col -->
+    </div><!-- /grid -->
+  </div><!-- /max-w -->
+
+  <footer style="border-top:1px solid var(--border); padding:20px 24px; text-align:center;">
+    <p style="font-size:0.75rem; color:var(--muted);">© 2026 Emaar Almadina Industries LLC — GFRC &amp; GFRP Facade Specialists · Dubai, UAE</p>
+    <p style="font-size:0.7rem; color:var(--muted); margin-top:3px; opacity:0.6;">All prices in AED including 5% VAT · Rates subject to site inspection · Valid 30 days from issue</p>
+  </footer>
+
+</div><!-- /screenView -->
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PRINT VIEW
+     ══════════════════════════════════════════════════════════════ -->
+<div id="printView">
+
+  <!-- Letterhead -->
+  <div class="ph">
+    <div>
+      <div id="pLogoWrap" style="width:80px; height:60px; border:2px dashed #0891b2; display:flex; align-items:center; justify-content:center; border-radius:6px; margin-bottom:8px;">
+        <span style="color:#0891b2; font-size:6.5pt; font-weight:800; text-align:center; line-height:1.4;">COMPANY<br>LOGO</span>
+      </div>
+      <div class="pco">Emaar Almadina Industries</div>
+      <div class="psub">GFRC · GFRP · FACADE ENGINEERING · DUBAI, UAE</div>
+      <div class="pmeta" style="margin-top:5px;">📍 Dubai Investment Park · UAE &nbsp;|&nbsp; ✉ info@emaarmadina.ae &nbsp;|&nbsp; ☎ +971 4 XXX XXXX</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="pref" id="pRef">EAI-2026-0000</div>
+      <div class="pmeta"><strong>Quotation Date:</strong> <span id="pDate">—</span></div>
+      <div class="pmeta"><strong>Valid Until:</strong> <span id="pValid">—</span></div>
+      <div class="pmeta"><strong>Prepared By:</strong> <span id="pPrepared">—</span></div>
+    </div>
+  </div>
+
+  <!-- Client Info -->
+  <div class="pclient">
+    <div><strong>Client:</strong> <span id="pClient">—</span></div>
+    <div><strong>Project:</strong> <span id="pProject">—</span></div>
+    <div><strong>Category:</strong> GFRC / GFRP Facade Elements</div>
+  </div>
+
+  <!-- Elements Table -->
+  <div class="ptitle">Scope of Works — Element Breakdown</div>
+  <table class="ptbl">
+    <thead>
+      <tr>
+        <th style="width:4%;">#</th>
+        <th style="width:24%;">Element Description</th>
+        <th style="width:7%;">Type</th>
+        <th style="width:13%;">Typology</th>
+        <th style="width:7%;">Area m²</th>
+        <th style="width:11%;">Complexity</th>
+        <th style="width:14%;">Fixing System</th>
+        <th style="width:10%;">Fabrication</th>
+        <th style="width:10%;">Tooling</th>
+      </tr>
+    </thead>
+    <tbody id="pElBody"></tbody>
+  </table>
+
+  <!-- Cost Summary Table -->
+  <div class="ptitle">Financial Summary</div>
+  <table class="ptbl">
+    <thead><tr><th style="width:65%;">Cost Component</th><th style="width:35%; text-align:right;">Amount (AED)</th></tr></thead>
+    <tbody>
+      <tr><td>Fabrication — Materials, Labour, Casting &amp; Curing</td><td style="text-align:right;" id="pFab">0.00</td></tr>
+      <tr><td>Mold / Tooling Engineering — MDF, CNC, Foam Patterns &amp; Quality Control</td><td style="text-align:right;" id="pTool">0.00</td></tr>
+      <tr><td>Fixing &amp; Bracketry System — Supply &amp; Fabrication per specification</td><td style="text-align:right;" id="pFix">0.00</td></tr>
+      <tr id="pInstallRow"><td>Installation &amp; Delivery within UAE — Site handling &amp; fixing</td><td style="text-align:right;" id="pInstall">0.00</td></tr>
+      <tr>
+        <td style="font-weight:800; border-top:2px solid #0891b2; padding-top:8px;">Sub-Total (Exclusive of VAT)</td>
+        <td style="font-weight:800; text-align:right; border-top:2px solid #0891b2; padding-top:8px;" id="pSub">0.00</td>
+      </tr>
+      <tr>
+        <td style="color:#92400e;">UAE Federal Value Added Tax (VAT @ 5%)</td>
+        <td style="text-align:right; color:#92400e;" id="pVAT">0.00</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="ptotal">
+    <div>
+      <div style="font-size:11pt; font-weight:900; color:#0f172a;">GRAND TOTAL — Including 5% VAT</div>
+      <div style="font-size:8pt; color:#64748b; margin-top:3px;">Total Facade Area: <span id="pArea">0.00</span> m² &nbsp;|&nbsp; All amounts in UAE Dirhams (AED)</div>
+    </div>
+    <div class="ptotal-num" id="pGrand">AED 0.00</div>
+  </div>
+
+  <!-- Compliance -->
+  <div class="ptitle">Standards &amp; Compliance Declaration</div>
+  <div class="pcomp" id="pComp"></div>
+
+  <!-- Payment Terms -->
+  <div class="ptitle">Payment Schedule</div>
+  <table class="ptbl">
+    <thead><tr><th>Milestone</th><th>%</th><th>Trigger Condition</th></tr></thead>
+    <tbody>
+      <tr><td><strong>1st Installment — Advance Payment</strong></td><td><strong>50%</strong></td><td>Upon signed LPO / Contract acceptance &amp; receipt of this quotation</td></tr>
+      <tr><td><strong>2nd Installment — Delivery Milestone</strong></td><td><strong>40%</strong></td><td>Upon completion of fabrication, QC sign-off &amp; delivery to site</td></tr>
+      <tr><td><strong>3rd Installment — Retention Release</strong></td><td><strong>10%</strong></td><td>Upon final installation, snag clearance &amp; handover certificate</td></tr>
+    </tbody>
+  </table>
+
+  <div class="pterms">
+    <strong>General Terms &amp; Conditions:</strong> This quotation is valid for 30 days from the date of issue. All prices are in UAE Dirhams (AED) and include 5% VAT as required by the UAE Federal Tax Authority (FTA). GFRC elements are manufactured using Alkali-Resistant (AR) glass fibers (Cem-FIL / NEG grade) in compliance with GRCA PQS and PCI MNL-130. GFRP elements use fire-retardant resin systems certified to ASTM E84 Class A and EN 13501-1. All structural bracketry complies with ASTM A276 / BS EN 10088. Supply of approved shop drawings by client is a prerequisite for commencement. Delivery timelines run from receipt of advance payment and approved shop drawings. Emaar Almadina Industries reserves the right to revise pricing for scope changes exceeding ±15% of the quoted quantities. Mock-up panels, structural engineering certification, and civil defense approvals (where required) are billable separately. This document is commercially confidential and intended solely for the named client and project.
+  </div>
+
+  <div class="psigs">
+    <div>
+      <div class="psig-line">
+        <div style="font-weight:800;">For &amp; On Behalf of Emaar Almadina Industries LLC</div>
+        <div style="color:#64748b; margin-top:4px;">Authorised Signatory / Company Stamp</div>
+        <div style="margin-top:20px; color:#94a3b8;">Name: ___________________________</div>
+      </div>
+    </div>
+    <div>
+      <div class="psig-line">
+        <div style="font-weight:800;">Client Acceptance &amp; Acknowledgment</div>
+        <div style="color:#64748b; margin-top:4px;">Name, Signature &amp; Company Stamp</div>
+        <div style="margin-top:20px; color:#94a3b8;">Date: ____________________________</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /printView -->
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     JAVASCRIPT
+     ══════════════════════════════════════════════════════════════ -->
+<script>
+/* ─── CONSTANTS ─── */
+const R = {
+  fab:   { GFRC: 350, GFRP: 450 },
+  tool:  { GFRC: 0.15, GFRP: 0.18 },
+  fix:   { ss316: 85, ss304: 65, hdg: 45, direct: 15 },
+  inst:  75,
+  vat:   0.05,
+};
+
+const TYPOLOGIES = {
+  cornice:  'Decorative Cornices',
+  cladding: 'Cladding Panels (Flat/Ribbed)',
+  ornament: '3D Ornamental Elements',
+  column:   'Columns / Capitals',
+  dome:     'Domes',
+  custom:   'Custom Element',
+};
+
+const COMPLEXITY = {
+  '1.0':  'Standard (×1.0)',
+  '1.25': 'Medium / Curved (×1.25)',
+  '1.5':  'High / Complex 3D (×1.5)',
+};
+
+const FIXING = {
+  ss316:  'SS 316 Stainless Steel Brackets',
+  ss304:  'SS 304 Stainless Steel Brackets',
+  hdg:    'Galvanized (HDG) Sub-frame',
+  direct: 'Direct Fix',
+};
+
+/* ─── STATE ─── */
+let elCounter = 0;
+const ELS = [];
+let isDark = true;
+const quoteRef = 'EAI-2026-' + String(Math.floor(1000 + Math.random() * 9000));
+
+/* ─── INIT ─── */
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('quoteRefDisplay').textContent = quoteRef;
+  document.getElementById('navRef').textContent = quoteRef;
+
+  const today = new Date();
+  const valid = new Date(today);
+  valid.setDate(today.getDate() + 30);
+
+  const fmt = d => d.toISOString().split('T')[0];
+  document.getElementById('qDate').value  = fmt(today);
+  document.getElementById('qValid').value = fmt(valid);
+  document.getElementById('qPrepared').value = 'Eng. Ahmed Al-Rashid';
+  document.getElementById('qClient').value   = 'Al Noor Real Estate LLC';
+  document.getElementById('qProject').value  = 'Luxury Residential Tower — Dubai';
+
+  syncMeta();
+
+  // Demo default elements
+  addEl('GFRC', {
+    name: 'External Decorative Cornice Band',
+    typology: 'cornice', area: 240, lm: 160, thick: 30,
+    cplx: '1.25', fix: 'ss316',
+  });
+  addEl('GFRC', {
+    name: 'Cladding Panels — North & South Elevations',
+    typology: 'cladding', area: 680, lm: 0, thick: 25,
+    cplx: '1.0', fix: 'ss304',
+  });
+  addEl('GFRP', {
+    name: 'Ornamental Capitals & Column Cladding',
+    typology: 'column', area: 96, lm: 48, thick: 10,
+    cplx: '1.5', fix: 'ss316',
+  });
+  addEl('GFRP', {
+    name: 'Rooftop Decorative Domes (×4 units)',
+    typology: 'dome', area: 52, lm: 0, thick: 8,
+    cplx: '1.5', fix: 'direct',
+  });
+});
+
+/* ─── THEME ─── */
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeIcon').textContent  = isDark ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+}
+
+/* ─── LOGO UPLOAD ─── */
+function loadLogo(input) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('logoImg');
+    const ph  = document.getElementById('logoPlaceholder');
+    img.src = e.target.result;
+    img.style.display = 'block';
+    ph.style.display = 'none';
+
+    // also update print logo
+    const pw = document.getElementById('pLogoWrap');
+    pw.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:contain;border-radius:4px;" alt="Logo">`;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+/* ─── META SYNC ─── */
+function syncMeta() {
+  document.getElementById('pRef').textContent     = quoteRef;
+  document.getElementById('pDate').textContent    = document.getElementById('qDate').value || '—';
+  document.getElementById('pValid').textContent   = document.getElementById('qValid').value || '—';
+  document.getElementById('pPrepared').textContent = document.getElementById('qPrepared').value || '—';
+  document.getElementById('pClient').textContent  = document.getElementById('qClient').value || '—';
+  document.getElementById('pProject').textContent = document.getElementById('qProject').value || '—';
+}
+
+/* ─── ADD ELEMENT ─── */
+function addEl(mat, defs = {}) {
+  elCounter++;
+  const id = elCounter;
+  const el = {
+    id, mat,
+    name:     defs.name     || `${mat} Element ${id}`,
+    typology: defs.typology || 'cladding',
+    area:     defs.area     ?? 100,
+    lm:       defs.lm       ?? 0,
+    thick:    defs.thick    ?? 25,
+    cplx:     defs.cplx     || '1.0',
+    fix:      defs.fix      || 'ss304',
+  };
+  ELS.push(el);
+
+  const empty = document.getElementById('emptyMsg');
+  if (empty) empty.remove();
+
+  const card = document.createElement('div');
+  card.id = `ec-${id}`;
+  card.className = 'card';
+  card.style.padding = '18px 20px';
+  card.style.borderTop = `2px solid ${mat === 'GFRC' ? '#10b981' : '#3b82f6'}`;
+
+  const accentCol  = mat === 'GFRC' ? '#34d399' : '#60a5fa';
+  const accentBg   = mat === 'GFRC' ? 'rgba(52,211,153,0.09)' : 'rgba(96,165,250,0.09)';
+  const accentBord = mat === 'GFRC' ? 'rgba(52,211,153,0.22)' : 'rgba(96,165,250,0.22)';
+
+  const typoOpts = Object.entries(TYPOLOGIES).map(([k,v]) =>
+    `<option value="${k}"${k===el.typology?' selected':''}>${v}</option>`).join('');
+  const cplxOpts = Object.entries(COMPLEXITY).map(([k,v]) =>
+    `<option value="${k}"${k===el.cplx?' selected':''}>${v}</option>`).join('');
+  const fixOpts  = Object.entries(FIXING).map(([k,v]) =>
+    `<option value="${k}"${k===el.fix?' selected':''}>${v}</option>`).join('');
+
+  card.innerHTML = `
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:200px;">
+        <div class="el-num">${id}</div>
+        <div style="flex:1;">
+          <input type="text" class="inp" style="font-weight:700;font-size:0.92rem;" value="${escHtml(el.name)}"
+            oninput="setField(${id},'name',this.value)" placeholder="Element name / description">
+          <div style="margin-top:5px;">
+            <span class="badge badge-${mat.toLowerCase()}">${mat}</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:9px;flex-shrink:0;">
+        <div style="background:${accentBg};border:1px solid ${accentBord};border-radius:10px;padding:9px 16px;text-align:right;min-width:148px;">
+          <div style="font-size:0.64rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Element Total</div>
+          <div style="font-size:1.1rem;font-weight:900;color:${accentCol};margin-top:2px;letter-spacing:-0.01em;" id="et-${id}">AED 0</div>
+        </div>
+        <button class="btn-del" onclick="removeEl(${id})" title="Remove element">✕</button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;">
+      <div>
+        <label class="label">Typology</label>
+        <select class="inp" onchange="setField(${id},'typology',this.value)">${typoOpts}</select>
+      </div>
+      <div>
+        <label class="label">Surface Area (m²)</label>
+        <input type="number" class="inp" value="${el.area}" min="0" step="0.5"
+          oninput="setField(${id},'area',+this.value||0)">
+      </div>
+      <div>
+        <label class="label">Linear Meters (lm)</label>
+        <input type="number" class="inp" value="${el.lm}" min="0" step="0.5"
+          oninput="setField(${id},'lm',+this.value||0)" placeholder="Optional">
+      </div>
+      <div>
+        <label class="label">Thickness / Girth (mm)</label>
+        <input type="number" class="inp" value="${el.thick}" min="6" max="120" step="1"
+          oninput="setField(${id},'thick',+this.value||25)">
+      </div>
+      <div>
+        <label class="label">Complexity Factor</label>
+        <select class="inp" onchange="setField(${id},'cplx',this.value)">${cplxOpts}</select>
+      </div>
+      <div style="grid-column:span 2;">
+        <label class="label">Fixing / Bracketry System</label>
+        <select class="inp" onchange="setField(${id},'fix',this.value)">${fixOpts}</select>
+      </div>
+      <div>
+        <label class="label">Line Cost Detail</label>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:0.76rem;display:flex;flex-direction:column;gap:4px;">
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Fabrication</span><span style="color:var(--text);" id="ef-${id}">—</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Tooling</span><span style="color:var(--text);" id="eo-${id}">—</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Fixing</span><span style="color:var(--text);" id="ex-${id}">—</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('elContainer').appendChild(card);
+  calcEl(el);
+  recalc();
+}
+
+/* ─── FIELD UPDATE ─── */
+function setField(id, field, val) {
+  const el = ELS.find(e => e.id === id);
+  if (!el) return;
+  el[field] = val;
+  calcEl(el);
+  recalc();
+}
+
+/* ─── REMOVE ELEMENT ─── */
+function removeEl(id) {
+  const idx = ELS.findIndex(e => e.id === id);
+  if (idx > -1) ELS.splice(idx, 1);
+  const card = document.getElementById(`ec-${id}`);
+  if (card) card.remove();
+  if (ELS.length === 0) {
+    const container = document.getElementById('elContainer');
+    const div = document.createElement('div');
+    div.id = 'emptyMsg';
+    div.style.cssText = 'text-align:center;padding:32px;color:var(--muted);font-size:0.85rem;border:1px dashed var(--border2);border-radius:14px;';
+    div.textContent = 'No elements added. Click "Add GFRC" or "Add GFRP" to begin.';
+    container.appendChild(div);
+  }
+  recalc();
+}
+
+/* ─── CALC ELEMENT ─── */
+function calcEl(el) {
+  const cplx = parseFloat(el.cplx);
+  const area  = el.area || 0;
+  const fab   = area * R.fab[el.mat] * cplx;
+  const tool  = fab * R.tool[el.mat];
+  const fix   = area * R.fix[el.fix];
+  const total = fab + tool + fix;
+
+  const f = n => 'AED ' + Math.round(n).toLocaleString('en-AE');
+  const s = (tid, v) => { const e = document.getElementById(tid); if(e) e.textContent = v; };
+
+  s(`et-${el.id}`, f(total));
+  s(`ef-${el.id}`, f(fab));
+  s(`eo-${el.id}`, f(tool));
+  s(`ex-${el.id}`, f(fix));
+
+  return { fab, tool, fix, total };
+}
+
+/* ─── GLOBAL RECALC ─── */
+function recalc() {
+  let tFab=0, tTool=0, tFix=0, tArea=0;
+
+  ELS.forEach(el => {
+    const c = calcEl(el);
+    tFab  += c.fab;
+    tTool += c.tool;
+    tFix  += c.fix;
+    tArea += el.area || 0;
+  });
+
+  const withInst  = document.getElementById('installTog').checked;
+  const instCost  = withInst ? tArea * R.inst : 0;
+  const subtotal  = tFab + tTool + tFix + instCost;
+  const vat       = subtotal * R.vat;
+  const grand     = subtotal + vat;
+
+  const fd = (n, dec=2) => n.toLocaleString('en-AE', {minimumFractionDigits:dec, maximumFractionDigits:dec});
+  const fa = (n) => 'AED ' + fd(n);
+
+  // Screen
+  set('dFab',     fa(tFab));
+  set('dTool',    fa(tTool));
+  set('dFix',     fa(tFix));
+  set('dInstall', fa(instCost));
+  set('dSub',     fa(subtotal));
+  set('dVAT',     fa(vat));
+  set('dGrand',   'AED ' + Math.round(grand).toLocaleString('en-AE'));
+  set('dAreaNote',`Total quoted area: ${tArea.toFixed(2)} m²`);
+
+  // Print
+  set('pFab',    fd(tFab));
+  set('pTool',   fd(tTool));
+  set('pFix',    fd(tFix));
+  set('pInstall',fd(instCost));
+  set('pSub',    fd(subtotal));
+  set('pVAT',    fd(vat));
+  set('pGrand',  'AED ' + fd(grand));
+  set('pArea',   tArea.toFixed(2));
+
+  const pRow = document.getElementById('pInstallRow');
+  if (pRow) pRow.style.display = withInst ? '' : 'none';
+
+  updateCompliance();
+  updateSummary(tArea);
+  updatePrintTable();
+}
+
+function set(id, val) { const e = document.getElementById(id); if(e) e.textContent = val; }
+
+/* ─── ELEMENT SUMMARY ─── */
+function updateSummary(tArea) {
+  const panel = document.getElementById('summaryPanel');
+  if (!ELS.length) {
+    panel.innerHTML = '<span style="font-style:italic;">No elements added yet.</span>';
+    return;
+  }
+  const gfrcEls  = ELS.filter(e => e.mat === 'GFRC');
+  const gfrpEls  = ELS.filter(e => e.mat === 'GFRP');
+  const gfrcArea = gfrcEls.reduce((s,e) => s + (e.area||0), 0);
+  const gfrpArea = gfrpEls.reduce((s,e) => s + (e.area||0), 0);
+
+  panel.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:0.82rem;">
+        <span style="color:var(--muted);">Total Elements</span>
+        <span style="font-weight:700;color:var(--text);">${ELS.length}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:0.82rem;">
+        <span style="display:flex;align-items:center;gap:7px;"><span class="badge badge-gfrc">GFRC</span></span>
+        <span style="font-weight:700;color:#34d399;">${gfrcEls.length} el · ${gfrcArea.toFixed(1)} m²</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:0.82rem;">
+        <span style="display:flex;align-items:center;gap:7px;"><span class="badge badge-gfrp">GFRP</span></span>
+        <span style="font-weight:700;color:#60a5fa;">${gfrpEls.length} el · ${gfrpArea.toFixed(1)} m²</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:0.82rem;">
+        <span style="color:var(--muted);">Total Facade Area</span>
+        <span style="font-weight:800;color:var(--text);">${tArea.toFixed(2)} m²</span>
+      </div>
+    </div>
+  `;
+}
+
+/* ─── COMPLIANCE ─── */
+function updateCompliance() {
+  const panel = document.getElementById('compPanel');
+  const print = document.getElementById('pComp');
+
+  if (!ELS.length) {
+    panel.innerHTML = '<span style="font-style:italic;color:var(--muted);">Add elements to see applicable standards and compliance requirements.</span>';
+    if (print) print.innerHTML = '';
+    return;
+  }
+
+  const hasGFRC    = ELS.some(e => e.mat === 'GFRC');
+  const hasGFRP    = ELS.some(e => e.mat === 'GFRP');
+  const hasHiCplx  = ELS.some(e => parseFloat(e.cplx) >= 1.5);
+  const hasSS316   = ELS.some(e => e.fix === 'ss316');
+  const hasCoastal = hasSS316;
+
+  const items = [];
+  const ptext = [];
+
+  if (hasGFRC) {
+    items.push(['green', '<strong>GRCA PQS</strong> — Glassfibre Reinforced Concrete Association Production Quality Specification; mix design validation records mandatory']);
+    items.push(['green', '<strong>PCI MNL-130</strong> — Precast Concrete Institute GFRC manual; minimum 5% AR glass fibre by weight, w/c ratio ≤ 0.35, flexural strength ≥ 10 MPa']);
+    items.push(['green', '<strong>AR Glass Fibres</strong> — Alkali-resistant grade (Cem-FIL / NEG equiv.), 24 mm chopped strand, zirconia content ≥ 16%, EN 15422 compliant']);
+    ptext.push('GFRC: Complies with GRCA Production Quality Specification (PQS) and PCI MNL-130. Alkali-resistant (AR) glass fibre ≥ 5% by weight (Cem-FIL/NEG grade). 28-day flexural strength ≥ 10 MPa, w/c ≤ 0.35.');
+  }
+
+  if (hasGFRP) {
+    items.push(['amber', '<strong>ASTM E84 Class A</strong> — Fire-retardant resin system certified: Flame Spread Index ≤ 25, Smoke Developed Index ≤ 450']);
+    items.push(['amber', '<strong>EN 13501-1 / UAE Civil Defense</strong> — Facade fire class B-s1,d0 minimum; Civil Defense NOC mandatory for facades above 15 m elevation']);
+    items.push(['green', '<strong>GFRP Resin</strong> — ISO NPG polyester or vinyl-ester fire-retardant resin, gel-coat ≥ 0.6 mm, UV-stabilised for Gulf climate (ASTM G154)']);
+    ptext.push('GFRP: Fire-retardant resin certified to ASTM E84 Class A (FSI ≤ 25, SDI ≤ 450) and EN 13501-1 Class B-s1,d0. UAE Civil Defense NOC required for installation on buildings >15 m. UV-stabilised gel-coat per ASTM G154.');
+  }
+
+  items.push(['green', '<strong>Dubai Municipality (DM)</strong> — Structural safety per Bylaw 33/2021; wind load per ASCE 7-22 / BS EN 1991-1-4; facade inspection compliance']);
+  items.push(['green', '<strong>ADIBC 2023</strong> — Abu Dhabi International Building Code; bracketry & substrate interface detailing per structural engineer sign-off']);
+  items.push(['green', '<strong>Estidama Pearl Rating</strong> — Thermal documentation for RE-R1/SM-R1 credits; ventilated cavity specified where applicable']);
+  ptext.push('UAE Codes: Dubai Municipality Bylaw 33/2021 structural compliance. ADIBC 2023 facade detailing. Estidama Pearl thermal documentation included. Steelwork to ASTM A276 / BS EN 10088.');
+
+  if (hasSS316) {
+    items.push(['green', '<strong>SS 316 — Marine Grade</strong> — ASTM A276 / A484 compliant; mandatory in coastal & high-humidity zones per DM coastal facade guidelines']);
+    ptext.push('SS 316 marine-grade stainless steel specified; ASTM A276/A484 compliant per DM coastal zone requirements.');
+  }
+  if (hasHiCplx) {
+    items.push(['amber', '<strong>Complex 3D Geometry (Class 3)</strong> — Third-party structural engineering sign-off required per DM Clause 7.4.2; mock-up panel mandatory before production']);
+    ptext.push('Complex 3D elements: third-party engineering sign-off and mock-up panel required per Dubai Municipality Clause 7.4.2.');
+  }
+
+  panel.innerHTML = items.map(([color, text]) => `
+    <div class="ci">
+      <div class="ci-dot ci-dot-${color === 'amber' ? 'amber' : 'green'}"></div>
+      <span style="color:var(--text);font-size:0.77rem;line-height:1.55;">${text}</span>
+    </div>
+  `).join('');
+
+  if (print) print.innerHTML = ptext.map(t => `• ${t}`).join('<br>');
+}
+
+/* ─── PRINT ELEMENTS TABLE ─── */
+function updatePrintTable() {
+  const tbody = document.getElementById('pElBody');
+  if (!tbody) return;
+  const fd = (n) => n.toLocaleString('en-AE', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  tbody.innerHTML = ELS.map((el, i) => {
+    const c = calcEl(el);
+    return `
+      <tr>
+        <td>${i+1}</td>
+        <td>${escHtml(el.name)}</td>
+        <td>${el.mat}</td>
+        <td>${TYPOLOGIES[el.typology] || el.typology}</td>
+        <td>${(el.area||0).toFixed(2)}</td>
+        <td>${COMPLEXITY[el.cplx] || el.cplx}</td>
+        <td>${FIXING[el.fix] || el.fix}</td>
+        <td>${fd(c.fab)}</td>
+        <td>${fd(c.tool)}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/* ─── PRINT TRIGGER ─── */
+function doPrint() {
+  syncMeta();
+  updatePrintTable();
+  window.print();
+}
+
+/* ─── UTILS ─── */
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
