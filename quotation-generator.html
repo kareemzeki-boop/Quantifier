@@ -490,21 +490,24 @@ select.inp { cursor:pointer; }
 
 const FINISHES = {
   GFRC: {
-    wsf_s:  { label:'White Smooth Finish — Saudi Silica',             base:101.82, std:33 },
-    wsf_i:  { label:'White Smooth Finish — Indian Silica',            base:96.18,  std:33 },
-    psf_l:  { label:'Pigmented Smooth — Light Color',                 base:112.74, std:33 },
-    psf_d:  { label:'Pigmented Smooth — Dark Color',                  base:181.05, std:33 },
-    pae_l:  { label:'Acid Etched — Light Color Pigmented',            base:114.00, std:33 },
-    pae_d:  { label:'Acid Etched — Dark Color Pigmented',             base:182.31, std:33 },
+    // AED/m² at std thickness 33 mm, Info-sheet density 2050 kg/m³ (reference.xlsx)
+    wsf_s:  { label:'White Smooth Finish — Saudi Silica',             base:102, std:33 },
+    wsf_i:  { label:'White Smooth Finish — Indian Silica',            base:96,  std:33 },
+    psf_l:  { label:'Pigmented Smooth — Light Color',                 base:113, std:33 },
+    psf_d:  { label:'Pigmented Smooth — Dark Color',                  base:181, std:33 },
+    pae_l:  { label:'Acid Etched — Light Color Pigmented',            base:114, std:33 },
+    pae_d:  { label:'Acid Etched — Dark Color Pigmented',             base:182, std:33 },
   },
   GFRP: {
-    gfrp_s: { label:'Standard Gel-Coat — White/Off-White',            base:185,    std:8  },
-    gfrp_p: { label:'Pigmented FR Gel-Coat — Custom Color',           base:225,    std:8  },
-    gfrp_t: { label:'Premium Textured Gel-Coat — High Build FR',      base:275,    std:8  },
+    gfrp_s: { label:'Standard Gel-Coat — White/Off-White',            base:185, std:8  },
+    gfrp_p: { label:'Pigmented FR Gel-Coat — Custom Color',           base:225, std:8  },
+    gfrp_t: { label:'Premium Textured Gel-Coat — High Build FR',      base:275, std:8  },
   }
 };
 
-const DENSITY = { GFRC:2050, GFRP:1800 }; // kg/m³
+// GFRC production density 2000 kg/m³ (reference.xlsx col 12: 60 kg/m² ÷ 0.03 m = 2000)
+// Note: Info-sheet mix-design tables use 2050 for deriving AED/kg rate — see calcOneEl
+const DENSITY = { GFRC:2000, GFRP:1800 }; // kg/m³
 
 // Mold rates, complexity factors and typical cast counts from Yas Bay data
 const MOLDS = {
@@ -816,16 +819,20 @@ function calcOneEl(el) {
   const thick     = el.thick || (el.mat==='GFRC' ? 25 : 8);
   const panelArea = el.panelArea || 1.0;
 
-  // Material cost (scaled by thickness vs standard)
-  const fin    = FINISHES[el.mat][el.finish];
-  const matCost = area * fin.base * (thick / fin.std);
+  const fin = FINISHES[el.mat][el.finish];
+
+  // Weight: production density from reference.xlsx (GFRC 2000, GFRP 1800 kg/m³)
+  const weight = area * (thick / 1000) * DENSITY[el.mat];
+
+  // Material cost — GFRC: weight × rate/kg derived from Info-sheet AED/m² at 33 mm / 2050 density
+  //                GFRP: straightforward area × rate × thickness scaling
+  const matCost = el.mat === 'GFRC'
+    ? weight * (fin.base / ((fin.std / 1000) * 2050))
+    : area * fin.base * (thick / fin.std);
 
   // Logistics
-  const logRate  = 10; // AED/m² fixed (from spreadsheet)
+  const logRate  = 10; // AED/m² fixed (reference.xlsx col 31)
   const logCost  = area * logRate;
-
-  // Weight
-  const weight = area * (thick / 1000) * DENSITY[el.mat];
 
   // Mold (using floor() for integer mold count, verified from spreadsheet)
   const mold     = MOLDS[el.mat][el.moldType];
